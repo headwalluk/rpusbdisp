@@ -15,15 +15,15 @@ sudo apt install dkms
 Copy the source tree into the DKMS source directory:
 
 ```bash
-sudo cp -r . /usr/src/rpusbdisp-0.1.0/
+sudo cp -r . /usr/src/rpusbdisp-0.2.0/
 ```
 
 Register, build, and install the module:
 
 ```bash
-sudo dkms add rpusbdisp/0.1.0
-sudo dkms build rpusbdisp/0.1.0
-sudo dkms install rpusbdisp/0.1.0
+sudo dkms add rpusbdisp/0.2.0
+sudo dkms build rpusbdisp/0.2.0
+sudo dkms install rpusbdisp/0.2.0
 ```
 
 The module is now installed and will be rebuilt automatically on kernel upgrades.
@@ -46,7 +46,7 @@ sudo modprobe rp_usbdisplay
 ## Uninstalling
 
 ```bash
-sudo dkms remove rpusbdisp/0.1.0 --all
+sudo dkms remove rpusbdisp/0.2.0 --all
 ```
 
 This removes the module for all kernel versions and deletes the DKMS registration.
