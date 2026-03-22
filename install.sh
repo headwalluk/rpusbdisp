@@ -22,12 +22,9 @@ fi
 if [ "$HAS_DKMS" -eq 1 ]; then
     DKMS_SRC="/usr/src/${PACKAGE_NAME}-${PACKAGE_VERSION}"
 
-    if [ ! -d "$DKMS_SRC" ]; then
-        echo "Copying source to ${DKMS_SRC} ..."
-        cp -r "$SCRIPT_DIR" "$DKMS_SRC"
-    else
-        echo "Source already exists at ${DKMS_SRC}, skipping copy."
-    fi
+    echo "Syncing source to ${DKMS_SRC} ..."
+    mkdir -p "$DKMS_SRC"
+    rsync -a --delete "$SCRIPT_DIR/" "$DKMS_SRC/"
 
     echo "Adding module to DKMS ..."
     dkms add -m "$PACKAGE_NAME" -v "$PACKAGE_VERSION" 2>/dev/null || \
