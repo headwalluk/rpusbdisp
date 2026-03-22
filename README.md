@@ -76,6 +76,10 @@ Detailed guides are available in the [docs/](docs/) directory:
 - [DKMS Installation](docs/dkms-install.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
+## Limitations
+
+The driver uses `fb_deferred_io` and does not implement `fb_mmap`. Tools that require mmap on the framebuffer (e.g. mplayer, fbi) will not work. This device is best suited for **text and static image output** — see the [samples/](samples/) directory for working examples.
+
 ## Sample Programs
 
 The [samples/](samples/) directory contains example programs demonstrating how to write to the framebuffer device from Bash, Python, Node.js, and C.

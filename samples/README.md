@@ -8,6 +8,7 @@ via the Linux framebuffer interface (`/dev/fbN`).
 | Language | File              | Dependencies                         |
 |----------|-------------------|--------------------------------------|
 | Bash     | `bash/hello.sh`   | ImageMagick (`convert`), optionally python3 for 16-bit fb |
+| Bash     | `bash/show_image.sh` | ImageMagick (`convert`), optionally python3 for 16-bit fb |
 | Python   | `python/hello.py` | Python 3, Pillow (`pip install Pillow`) |
 | Node.js  | `node/hello.js`   | Node.js (no external packages)       |
 | C        | `c/hello.c`       | GCC, Linux headers                   |
@@ -46,6 +47,12 @@ path as a command-line argument.
 ```bash
 # Auto-detect rpusbdisp framebuffer:
 sudo bash samples/bash/hello.sh
+
+# Custom text:
+sudo bash samples/bash/hello.sh "My message"
+
+# Display an image:
+sudo bash samples/bash/show_image.sh photo.jpg
 
 # Or specify a device:
 sudo FB_DEV=/dev/fb1 bash samples/bash/hello.sh

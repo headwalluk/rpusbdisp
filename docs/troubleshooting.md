@@ -41,15 +41,30 @@ will still function normally.
 
 ## Permission Denied on /dev/fbN
 
-The framebuffer device is typically owned by root. You have a few options:
+The framebuffer device is typically owned by `root:video`. Check with:
+
+```bash
+ls -l /dev/fb*
+```
+
+The recommended fix is to add your user to the `video` group:
+
+```bash
+sudo usermod -aG video $USER
+```
+
+You will need to log out and back in (or reboot) for the group change to take
+effect. Verify with:
+
+```bash
+groups    # should include "video"
+```
+
+Other options:
 
 - Run your application with `sudo`.
-- Use `install.sh`, which sets up udev rules for broader access.
-- As a quick workaround, open permissions directly:
-
-  ```bash
-  sudo chmod 666 /dev/fbN
-  ```
+- Use `install.sh`, which sets up udev rules that set mode `0666` on the
+  rpusbdisp framebuffer device.
 
 ## Display Shows White Noise or "Waiting for Signal"
 
