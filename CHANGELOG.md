@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.1] - 2026-03-22
+
+### Fixed
+- C sample (`samples/c/hello.c`): replaced `mmap()` with `write()` — the rpusbdisp driver uses `fb_deferred_io` and does not support mmap
+
+### Changed
+- Bash sample (`samples/bash/hello.sh`): accepts optional text argument (defaults to "Hello World", capped at 32 characters)
+- `install.sh`: DKMS source sync now excludes `.git`, `.github`, `docs`, `samples`, and `tools` directories
+
 ## [0.2.0] - 2026-03-22
 
 ### Fixed

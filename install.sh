@@ -24,7 +24,13 @@ if [ "$HAS_DKMS" -eq 1 ]; then
 
     echo "Syncing source to ${DKMS_SRC} ..."
     mkdir -p "$DKMS_SRC"
-    rsync -a --delete "$SCRIPT_DIR/" "$DKMS_SRC/"
+    rsync -a --delete \
+        --exclude='.git' \
+        --exclude='.github' \
+        --exclude='docs' \
+        --exclude='samples' \
+        --exclude='tools' \
+        "$SCRIPT_DIR/" "$DKMS_SRC/"
 
     echo "Adding module to DKMS ..."
     dkms add -m "$PACKAGE_NAME" -v "$PACKAGE_VERSION" 2>/dev/null || \

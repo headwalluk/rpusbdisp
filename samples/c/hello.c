@@ -1,7 +1,7 @@
 /*
  * hello.c - Render "HELLO WORLD" on the rpusbdisp framebuffer.
  *
- * Uses the Linux framebuffer API (fbdev) with mmap.  Includes a minimal
+ * Uses the Linux framebuffer API (fbdev) with write().  Includes a minimal
  * built-in 8x16 bitmap font for uppercase A-Z, digits, space, and basic
  * punctuation.
  *
@@ -21,7 +21,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <sys/mman.h>
 #include <linux/fb.h>
 
 /* ======================================================================
@@ -278,18 +277,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    /* mmap the framebuffer */
+    /* Allocate a framebuffer in memory.
+     * The rpusbdisp driver uses fb_deferred_io and does not support mmap,
+     * so we render into a heap buffer and write() it to the device. */
     size_t fb_size = (size_t)width * height * (bpp / 8);
-    unsigned char *fb = mmap(NULL, fb_size, PROT_READ | PROT_WRITE,
-                             MAP_SHARED, fd, 0);
-    if (fb == MAP_FAILED) {
-        perror("mmap");
+    unsigned char *fb = calloc(1, fb_size);
+    if (!fb) {
+        fprintf(stderr, "ERROR: failed to allocate %zu bytes\n", fb_size);
         close(fd);
         return 1;
     }
-
-    /* Clear to black */
-    memset(fb, 0, fb_size);
 
     /* Choose a scale factor so text is roughly 60% of screen width */
     const char *text = "HELLO WORLD";
@@ -303,8 +300,27 @@ int main(int argc, char *argv[])
 
     draw_string(fb, width, height, bpp, text, scale);
 
+    /* Write the buffer to the framebuffer device */
+    if (lseek(fd, 0, SEEK_SET) < 0) {
+        perror("lseek");
+        free(fb);
+        close(fd);
+        return 1;
+    }
+
+    ssize_t written = write(fd, fb, fb_size);
+    if (written < 0) {
+        perror("write framebuffer");
+        free(fb);
+        close(fd);
+        return 1;
+    }
+    if ((size_t)written != fb_size) {
+        fprintf(stderr, "WARNING: wrote %zd of %zu bytes\n", written, fb_size);
+    }
+
     /* Clean up */
-    munmap(fb, fb_size);
+    free(fb);
     close(fd);
 
     fprintf(stderr, "Done. \"%s\" written to %s.\n", text, fb_path);

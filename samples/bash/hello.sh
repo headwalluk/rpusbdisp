@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 #
-# hello.sh - Render "Hello World" on the rpusbdisp framebuffer
+# hello.sh - Render text on the rpusbdisp framebuffer
+#
+# Usage: hello.sh [TEXT]
 #
 # Requires: ImageMagick (convert)
 #
 set -euo pipefail
+
+MAX_LEN=32
+TEXT="${1:-Hello World}"
+TEXT="${TEXT:0:$MAX_LEN}"
 
 log() { echo "$*" >&2; }
 
@@ -104,7 +110,7 @@ SHORTER=$((WIDTH < HEIGHT ? WIDTH : HEIGHT))
 POINTSIZE=$((SHORTER / 6))
 [[ "$POINTSIZE" -lt 12 ]] && POINTSIZE=12
 
-log "Rendering \"Hello World\" at point size ${POINTSIZE}..."
+log "Rendering \"${TEXT}\" at point size ${POINTSIZE}..."
 
 if [[ "$BPP" -eq 16 ]]; then
     # ImageMagick cannot directly output BGR565; render as 24-bit RGB then
@@ -114,7 +120,7 @@ if [[ "$BPP" -eq 16 ]]; then
     # then pack to 565 with a helper.
     convert -size "${WIDTH}x${HEIGHT}" xc:black \
         "${FONT_ARGS[@]}" -fill white -gravity center \
-        -pointsize "$POINTSIZE" -annotate +0+0 "Hello World" \
+        -pointsize "$POINTSIZE" -annotate +0+0 "$TEXT" \
         -depth 8 rgb:- | \
     python3 -c "
 import sys
@@ -130,8 +136,8 @@ sys.stdout.buffer.write(out)
 else
     convert -size "${WIDTH}x${HEIGHT}" xc:black \
         "${FONT_ARGS[@]}" -fill white -gravity center \
-        -pointsize "$POINTSIZE" -annotate +0+0 "Hello World" \
+        -pointsize "$POINTSIZE" -annotate +0+0 "$TEXT" \
         -depth 8 "${DEPTH_FMT}:${FB_DEV}"
 fi
 
-log "Done. \"Hello World\" written to $FB_DEV."
+log "Done. \"${TEXT}\" written to $FB_DEV."

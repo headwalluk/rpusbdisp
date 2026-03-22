@@ -2,7 +2,7 @@
 
 ## Project Status
 
-v0.2.0 — driver working on AMD64 Debian with DKMS. Install via `sudo ./install.sh`.
+v0.2.1 — driver working on AMD64 Debian with DKMS. Install via `sudo ./install.sh`.
 
 ### Completed
 - Driver compiles cleanly against kernel 6.12.74+deb13+1-amd64 (zero warnings) — also tested on 6.18.12+deb14-amd64
@@ -42,6 +42,16 @@ sudo cp drivers/linux-driver/rp_usbdisplay.ko /lib/modules/$(uname -r)/extra/
 sudo depmod -a
 sudo modprobe rp_usbdisplay
 ```
+
+## Version Bump Checklist
+
+When changing the version number, update all of these files:
+1. `VERSION` — canonical source
+2. `dkms.conf` — `PACKAGE_VERSION`
+3. `CHANGELOG.md` — add new section
+4. `README.md` — version badge
+5. `docs/dkms-install.md` — version references in example commands
+6. `CLAUDE.md` — project status line
 
 ## Important Notes
 - User runs all sudo/privileged commands themselves in a separate terminal
