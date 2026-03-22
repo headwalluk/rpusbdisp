@@ -19,8 +19,19 @@ This fork modernises the kernel driver to build and run on current kernels (6.1+
 - Linux kernel 6.1 or later
 - Kernel headers for your running kernel (`linux-headers-$(uname -r)`)
 - Standard build tools (`build-essential` on Debian/Ubuntu)
+- DKMS (`dkms` package, recommended) — automatically rebuilds the module on kernel upgrades
 
-### Build and Install
+### Install with DKMS (recommended)
+
+```bash
+git clone https://github.com/headwalluk/rpusbdisp.git
+cd rpusbdisp
+sudo ./install.sh
+```
+
+The script detects DKMS, builds and installs the module, installs udev rules, and loads the module automatically.
+
+### Manual Build and Install
 
 ```bash
 git clone https://github.com/headwalluk/rpusbdisp.git
@@ -28,15 +39,15 @@ cd rpusbdisp/drivers/linux-driver
 make modules
 sudo cp rp_usbdisplay.ko /lib/modules/$(uname -r)/extra/
 sudo depmod -a
+sudo modprobe rp_usbdisplay
 ```
 
-### Load and Verify
+### Verify
 
 ```bash
-sudo modprobe rp_usbdisplay
 cat /proc/fb            # look for rpusbdisp-fb
 ls /dev/fb*             # framebuffer device should appear
-cat /dev/urandom > /dev/fbN   # test output (replace N)
+cat /dev/urandom > /dev/fbN   # test output (replace N with device number)
 ```
 
 For detailed build instructions, see the [documentation](#documentation).
@@ -69,7 +80,7 @@ The [samples/](samples/) directory contains example programs demonstrating how t
 
 ## DKMS
 
-DKMS support is provided via `dkms.conf` and the `install.sh` / `uninstall.sh` scripts. DKMS automatically rebuilds the kernel module whenever a new kernel is installed.
+DKMS support is provided via `dkms.conf` and the `install.sh` / `uninstall.sh` scripts. DKMS automatically rebuilds the kernel module whenever a new kernel is installed, so you never need to manually reinstall after a kernel upgrade.
 
 See [docs/dkms-install.md](docs/dkms-install.md) for setup instructions.
 

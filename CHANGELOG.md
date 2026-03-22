@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] - 2026-03-22
+
+### Fixed
+- DKMS build failure caused by driver Makefile using `$(PWD)` for `M=` and include paths, which resolved incorrectly when invoked via the kernel build system
+- Include paths in `EXTRA_CFLAGS` now use `$(src)` (set by kbuild to the out-of-tree module directory) instead of `$(PWD)`
+- Outer make targets (`modules`, `modules_install`, `clean`) guarded with `ifeq ($(KBUILD_EXTMOD),)` to prevent double-invocation when re-entered by the kernel build system
+- `KERNEL_SOURCE_DIR` default now uses `$(shell uname -r)` instead of backtick syntax
+
+### Changed
+- `install.sh` now unconditionally syncs source to `/usr/src/` on every run (via `rsync --delete`) so code changes are always picked up by subsequent DKMS builds
+
 ## [0.1.0] - 2026-03-22
 
 ### Added
