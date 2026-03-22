@@ -1,0 +1,45 @@
+name: Samples
+
+on:
+  push:
+    paths:
+      - 'samples/**'
+  pull_request:
+    paths:
+      - 'samples/**'
+
+jobs:
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint Python samples
+        run: ruff check samples/python/
+
+  c-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install gcc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc
+
+      - name: Build C samples
+        run: cd samples/c && make
+
+  node-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Node samples
+        run: cd samples/node && node --check hello.js

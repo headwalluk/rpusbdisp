@@ -1,0 +1,6 @@
+# RoboPeak USB Display - udev rules
+# Load the rp_usbdisplay module when the USB device is plugged in
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="fccf", ATTR{idProduct}=="a001", RUN+="/sbin/modprobe rp_usbdisplay"
+
+# Set permissions on the framebuffer device created by rpusbdisp
+ACTION=="add", SUBSYSTEM=="graphics", KERNEL=="fb[0-9]*", ATTRS{name}=="rpusbdisp*", GROUP="video", MODE="0666"

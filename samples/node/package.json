@@ -1,0 +1,10 @@
+{
+  "name": "rpusbdisp-hello",
+  "version": "1.0.0",
+  "description": "Hello World sample for the rpusbdisp framebuffer",
+  "main": "hello.js",
+  "scripts": {
+    "start": "node hello.js"
+  },
+  "license": "ISC"
+}

@@ -14,11 +14,17 @@
 *.a
 *.lib
 
-# kernel intermedate files
+# kernel intermediate files
 *.o.cmd
+*.ko.cmd
+*.mod.cmd
 *.ko
+*.mod
+*.mod.c
 modules.order
 Module.symvers
+.modules.order.cmd
+.Module.symvers.cmd
 .tmp_versions
 
 # Mac os DS_Store
@@ -41,3 +47,13 @@ Debug
 Release
 build
 doc
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Sample build output
+samples/c/hello

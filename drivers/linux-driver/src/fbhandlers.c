@@ -254,7 +254,7 @@ static int _display_setcolreg(u_int regno, u_int red, u_int green, u_int blue,
 
 static void _display_defio_handler(struct fb_info *info,
 				struct list_head *pagelist) {
-    struct page *cur;
+    struct fb_deferred_io_pageref *cur;
     struct fb_deferred_io *fbdefio = info->fbdefio;
     int top = RP_DISP_DEFAULT_HEIGHT, bottom = 0;
     int current_val;
@@ -262,17 +262,17 @@ static void _display_defio_handler(struct fb_info *info,
     unsigned long page_start;
 
     struct rpusbdisp_fb_private * pa = _get_fb_private(info);
-    if (!pa->binded_usbdev) return; //simply ignore it 
-    
-    list_for_each_entry(cur, &fbdefio->pagelist, lru) {
+    if (!pa->binded_usbdev) return; //simply ignore it
+
+    list_for_each_entry(cur, &fbdefio->pagereflist, list) {
 
         // convert page range to dirty box
-        page_start = (cur->index<<PAGE_SHIFT);
-        
+        page_start = cur->offset;
+
         if (page_start < info->fix.mmio_start && page_start >= info->fix.mmio_start + info->fix.smem_len) {
             continue;
         }
-        
+
         offset = (unsigned long)(page_start - info->fix.mmio_start);
         current_val = offset / info->fix.line_length;
         if (top>current_val) top = current_val;
@@ -360,7 +360,7 @@ static int _on_create_new_fb(struct fb_info ** out_fb, struct rpusbdisp_dev *dev
     *out_fb = NULL;
     
    
-    fb = framebuffer_alloc(sizeof(struct rpusbdisp_fb_private), NULL/*rpusbdisp_usb_get_devicehandle(dev)*/);
+    fb = framebuffer_alloc(sizeof(struct rpusbdisp_fb_private), dev ? rpusbdisp_usb_get_devicehandle(dev) : NULL);
     
     if (!fb) {
         err("Failed to initialize framebuffer device\n");
@@ -372,7 +372,7 @@ static int _on_create_new_fb(struct fb_info ** out_fb, struct rpusbdisp_dev *dev
 
 
     fb->fbops       = &_display_fbops;
-    fb->flags       = FBINFO_DEFAULT | FBINFO_VIRTFB;
+    fb->flags       = FBINFO_VIRTFB;
     
     fbmem_size = _var_info.yres * _vfb_fix.line_length; // Correct issue with size allocation (too big)
     fbmem =  rvmalloc(fbmem_size);
