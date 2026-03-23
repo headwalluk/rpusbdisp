@@ -1,6 +1,6 @@
 # RoboPeak Mini USB Display - Linux Driver
 
-[![Version](https://img.shields.io/badge/version-0.2.1-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.2.2-blue.svg)](CHANGELOG.md)
 [![Build](https://github.com/headwalluk/rpusbdisp/actions/workflows/build.yml/badge.svg)](https://github.com/headwalluk/rpusbdisp/actions/workflows/build.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/headwalluk/rpusbdisp.svg)](https://github.com/headwalluk/rpusbdisp/commits/master)
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)

@@ -19,7 +19,7 @@ KERNEL_SOURCE_DIR ?= /lib/modules/$(shell uname -r)/build
 # out-of-tree module directory (the M= path).  When invoked directly by the
 # user, $(src) is not yet set, but the outer make below will pass M=$(CURDIR)
 # so the kernel build system will set $(src) correctly on re-entry.
-EXTRA_CFLAGS += -I$(src)/src -I$(src)/../common
+ccflags-y += -I$(src)/src -I$(src)/../common
 
 obj-m := $(DRIVER_NAME).o
 

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.2] - 2026-03-23
+
+### Fixed
+- Driver Makefile: replaced deprecated `EXTRA_CFLAGS` with `ccflags-y` (modern kbuild convention)
+- Default framebuffer now uses a platform device instead of passing NULL to `framebuffer_alloc()`, fixing potential issues with sysfs device hierarchy
+
+### Added
+- `show_image.sh` sample: scales and displays any image on the framebuffer using ImageMagick, with auto-detection of display resolution and bit depth
+
 ## [0.2.1] - 2026-03-22
 
 ### Fixed

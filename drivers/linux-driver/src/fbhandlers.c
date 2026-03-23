@@ -75,6 +75,7 @@ static  struct fb_var_screeninfo _var_info /*__devinitdata*/ = {
 };
 
 
+static struct platform_device *_pdev;
 static DEFINE_MUTEX(_mutex_devreg);
 
 
@@ -360,7 +361,7 @@ static int _on_create_new_fb(struct fb_info ** out_fb, struct rpusbdisp_dev *dev
     *out_fb = NULL;
     
    
-    fb = framebuffer_alloc(sizeof(struct rpusbdisp_fb_private), dev ? rpusbdisp_usb_get_devicehandle(dev) : NULL);
+    fb = framebuffer_alloc(sizeof(struct rpusbdisp_fb_private), dev ? rpusbdisp_usb_get_devicehandle(dev) : &_pdev->dev);
     
     if (!fb) {
         err("Failed to initialize framebuffer device\n");
@@ -465,12 +466,27 @@ static void _on_release_fb(struct fb_info * fb)
 
 int __init register_fb_handlers(void)
 {
-    return _on_create_new_fb(&_default_fb, NULL);
+    int ret;
+
+    _pdev = platform_device_register_simple("rpusbdisp-fb", -1, NULL, 0);
+    if (IS_ERR(_pdev))
+        return PTR_ERR(_pdev);
+
+    ret = _on_create_new_fb(&_default_fb, NULL);
+    if (ret < 0) {
+        platform_device_unregister(_pdev);
+        _pdev = NULL;
+    }
+    return ret;
 }
 
 void unregister_fb_handlers(void)
 {
     _on_release_fb(_default_fb);
+    if (_pdev) {
+        platform_device_unregister(_pdev);
+        _pdev = NULL;
+    }
 }
 
 
