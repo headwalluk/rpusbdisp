@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.0] - 2026-06-06
+
+First stable release. The driver builds cleanly and runs on modern kernels
+(6.1+) on both AMD64/x86_64 and ARM/Raspberry Pi, with DKMS packaging for
+automatic rebuilds on kernel upgrades. Display output and touchscreen input are
+verified working on physical hardware.
+
+### Added
+- `console` module parameter (bool, default `1`): controls whether `fbcon` may
+  bind to the display. Load with `console=0` for a headless setup — the
+  framebuffer still appears at `/dev/fbN` for programmatic control, but the
+  kernel console will not take it over. In-kernel opens (`user == 0`) are
+  refused while userspace opens are unaffected.
+
 ## [0.2.2] - 2026-03-23
 
 ### Fixed

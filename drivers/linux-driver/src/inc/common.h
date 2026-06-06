@@ -43,6 +43,7 @@
 #include "inc/protocol.h"
 
 extern int fps;
+extern bool console;
 
 // object predefine
 

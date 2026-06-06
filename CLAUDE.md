@@ -2,7 +2,7 @@
 
 ## Project Status
 
-v0.2.2 — driver working on AMD64 Debian with DKMS. Install via `sudo ./install.sh`.
+v1.0.0 — driver working on AMD64 Debian with DKMS. Install via `sudo ./install.sh`.
 
 ### Completed
 - Driver compiles cleanly against kernel 6.12.74+deb13+1-amd64 (zero warnings) — also tested on 6.18.12+deb14-amd64

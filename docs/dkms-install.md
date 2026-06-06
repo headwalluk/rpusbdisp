@@ -15,15 +15,15 @@ sudo apt install dkms
 Copy the source tree into the DKMS source directory:
 
 ```bash
-sudo cp -r . /usr/src/rpusbdisp-0.2.2/
+sudo cp -r . /usr/src/rpusbdisp-1.0.0/
 ```
 
 Register, build, and install the module:
 
 ```bash
-sudo dkms add rpusbdisp/0.2.2
-sudo dkms build rpusbdisp/0.2.2
-sudo dkms install rpusbdisp/0.2.2
+sudo dkms add rpusbdisp/1.0.0
+sudo dkms build rpusbdisp/1.0.0
+sudo dkms install rpusbdisp/1.0.0
 ```
 
 The module is now installed and will be rebuilt automatically on kernel upgrades.
@@ -60,7 +60,7 @@ Then run `sudo ./install.sh` as normal.
 ## Uninstalling
 
 ```bash
-sudo dkms remove rpusbdisp/0.2.2 --all
+sudo dkms remove rpusbdisp/1.0.0 --all
 ```
 
 This removes the module for all kernel versions and deletes the DKMS registration.

@@ -287,8 +287,21 @@ static void _display_defio_handler(struct fb_info *info,
     _display_update(info, 0, top, info->var.width, bottom - top + 1, DISPLAY_UPDATE_HINT_NONE, NULL);
 }
 
+static int _display_open(struct fb_info *info, int user)
+{
+    // fbcon and other in-kernel clients open the framebuffer with user == 0.
+    // When the module is loaded with console=0 we refuse those opens so that
+    // fbcon will not bind to the display, leaving it free for purely
+    // programmatic control. Userspace opens via /dev/fbN pass user == 1 and
+    // are always allowed. (Same approach the udlfb DisplayLink driver uses.)
+    if (user == 0 && !console)
+        return -EBUSY;
+    return 0;
+}
+
 static  struct fb_ops _display_fbops /*__devinitdata*/ = {
     .owner = THIS_MODULE,
+    .fb_open = _display_open,
     .fb_read = fb_sys_read,
     .fb_write =     _display_write,
     .fb_fillrect =  _display_fillrect,

@@ -16,6 +16,7 @@ A clear and concise description of what the bug is.
 - **Distribution**:
 - **Architecture** (`uname -m`):
 - **USB display info** (`lsusb | grep -i fccf`):
+- **Module parameters** (`cat /sys/module/rp_usbdisplay/parameters/*`, or any options passed to `modprobe`):
 
 ## dmesg output
 
