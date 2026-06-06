@@ -40,7 +40,8 @@ Full instructions are in [docs/getting-started.md](docs/getting-started.md).
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — install, verify, and first output
-- [Module Parameters](docs/module-parameters.md) — `fps`, and running headless
+- [Module Parameters](docs/module-parameters.md) — `fps`
+- [Running Headless](docs/headless.md) — use the display without a framebuffer console
 - [Building on Debian/AMD64](docs/building-debian-amd64.md)
 - [Building on Raspberry Pi](docs/building-raspberry-pi.md)
 - [Cross-compiling for Raspberry Pi](docs/cross-compiling-for-rpi.md)

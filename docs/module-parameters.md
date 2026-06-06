@@ -33,40 +33,11 @@ echo 'options rp_usbdisplay fps=30' | sudo tee /etc/modprobe.d/rp_usbdisplay.con
 
 ## Headless operation (running without a framebuffer console)
 
-When the RoboPeak display is the only framebuffer on a machine — for example a
-Raspberry Pi with nothing connected to HDMI — the kernel framebuffer console
-(`fbcon`) binds to it and draws the text console on it. This is usually the
-desired plug-and-play behaviour.
+There is intentionally **no module parameter** to keep `fbcon` off the display.
+The kernel already provides standard, robust ways to do this (and a driver-side
+attempt at it caused a boot-time oops — see [Running Headless](headless.md) for
+the full story).
 
-If you want the display to stay "clean" and be driven purely programmatically,
-note first that `fbcon` binding does **not** stop you writing to `/dev/fbN`
-yourself — the console and direct writes coexist. `fbcon` only matters if you
-don't want console text on the display.
-
-To detach `fbcon` from the framebuffer, use the standard kernel mechanisms
-rather than a driver option:
-
-**At runtime** — unbind the framebuffer console from the VT layer:
-
-```bash
-# Find the fbcon vtconsole node (its 'name' reads "frame buffer device")
-grep -l "frame buffer device" /sys/class/vtconsole/vtcon*/name
-# Unbind it (replace vtcon1 with the node found above)
-echo 0 | sudo tee /sys/class/vtconsole/vtcon1/bind
-```
-
-The framebuffer remains at `/dev/fbN` for your application; the console is
-simply no longer drawn on it. Re-bind with `echo 1` to the same file.
-
-**At boot** — disable the framebuffer console globally via the kernel command
-line (on a Raspberry Pi, append to `/boot/firmware/cmdline.txt`):
-
-```
-fbcon=map:2
-```
-
-> **Earlier versions:** v1.0.0 shipped a `console=0` module parameter that tried
-> to achieve this by refusing in-kernel framebuffer opens. It caused a kernel
-> oops at boot when the display was the only framebuffer (refusing the open
-> makes `register_framebuffer()` fail while the device is being made the primary
-> console), and was removed in v1.0.1. Use the mechanisms above instead.
+In short: load the module with `fbcon=map:1` on the kernel command line, or
+unbind the framebuffer console at runtime via `/sys/class/vtconsole`. The
+[Running Headless](headless.md) guide covers both.
