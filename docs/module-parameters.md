@@ -6,7 +6,6 @@ rp_usbdisplay <name>=<value>`).
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `fps`     | int  | kernel config, else `16` | Refresh rate (frames per second) used to flush dirty regions to the display. |
-| `console` | bool | `1`     | Whether `fbcon` may bind to the display. Set `0` for headless operation. |
 
 You can inspect the parameters of the built module with:
 
@@ -26,43 +25,48 @@ If left unset (`0`), the driver falls back to the value compiled in via
 sudo modprobe rp_usbdisplay fps=30
 ```
 
-## `console`
-
-Controls whether the in-kernel framebuffer console (`fbcon`) is allowed to bind
-to the display.
-
-By default (`console=1`) the display registers as a normal framebuffer, so on a
-machine with no other display the kernel console binds to it — usually the
-desired behaviour, and what makes the device usable as a plug-and-play screen.
-
-If you instead want the device to stay headless and be driven purely
-programmatically, load the module with `console=0`:
+To apply it on every boot, add a modprobe config file:
 
 ```bash
-sudo modprobe rp_usbdisplay console=0
+echo 'options rp_usbdisplay fps=30' | sudo tee /etc/modprobe.d/rp_usbdisplay.conf
 ```
 
-The framebuffer still appears at `/dev/fbN` and can be written to as usual, but
-`fbcon` will not take it over. Internally this works by refusing in-kernel
-framebuffer opens (`user == 0`) while leaving userspace opens (`user == 1`,
-e.g. writes to `/dev/fbN`) unaffected. This is the same mechanism the `udlfb`
-DisplayLink driver uses.
+## Headless operation (running without a framebuffer console)
 
-> **Note:** `console` is read when `fbcon` first opens the framebuffer (at bind
-> time), and the parameter is exposed read-only in sysfs. Toggling it after the
-> module is loaded will not retroactively unbind an already-attached console —
-> set it at `modprobe` time.
+When the RoboPeak display is the only framebuffer on a machine — for example a
+Raspberry Pi with nothing connected to HDMI — the kernel framebuffer console
+(`fbcon`) binds to it and draws the text console on it. This is usually the
+desired plug-and-play behaviour.
 
-### Making it persistent
+If you want the display to stay "clean" and be driven purely programmatically,
+note first that `fbcon` binding does **not** stop you writing to `/dev/fbN`
+yourself — the console and direct writes coexist. `fbcon` only matters if you
+don't want console text on the display.
 
-To apply a parameter on every boot, add a modprobe config file:
+To detach `fbcon` from the framebuffer, use the standard kernel mechanisms
+rather than a driver option:
+
+**At runtime** — unbind the framebuffer console from the VT layer:
 
 ```bash
-echo 'options rp_usbdisplay console=0' | sudo tee /etc/modprobe.d/rp_usbdisplay.conf
+# Find the fbcon vtconsole node (its 'name' reads "frame buffer device")
+grep -l "frame buffer device" /sys/class/vtconsole/vtcon*/name
+# Unbind it (replace vtcon1 with the node found above)
+echo 0 | sudo tee /sys/class/vtconsole/vtcon1/bind
 ```
 
-Multiple options can be combined on one line:
+The framebuffer remains at `/dev/fbN` for your application; the console is
+simply no longer drawn on it. Re-bind with `echo 1` to the same file.
 
-```bash
-echo 'options rp_usbdisplay console=0 fps=30' | sudo tee /etc/modprobe.d/rp_usbdisplay.conf
+**At boot** — disable the framebuffer console globally via the kernel command
+line (on a Raspberry Pi, append to `/boot/firmware/cmdline.txt`):
+
 ```
+fbcon=map:2
+```
+
+> **Earlier versions:** v1.0.0 shipped a `console=0` module parameter that tried
+> to achieve this by refusing in-kernel framebuffer opens. It caused a kernel
+> oops at boot when the display was the only framebuffer (refusing the open
+> makes `register_framebuffer()` fail while the device is being made the primary
+> console), and was removed in v1.0.1. Use the mechanisms above instead.

@@ -44,10 +44,6 @@ int fps = 0;
 module_param(fps,int,0);
 MODULE_PARM_DESC(fps,"Specify the frame rate used to refresh the display (override kernel config)");
 
-bool console = true;
-module_param(console,bool,0444);
-MODULE_PARM_DESC(console,"Allow fbcon to bind to the display (1=default, 0=headless: keep /dev/fbN for programmatic control but stop fbcon taking it over)");
-
 
 
 static int __init usb_disp_init(void)

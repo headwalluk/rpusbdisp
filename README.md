@@ -1,6 +1,6 @@
 # RoboPeak Mini USB Display - Linux Driver
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](CHANGELOG.md)
 [![Build](https://github.com/headwalluk/rpusbdisp/actions/workflows/build.yml/badge.svg)](https://github.com/headwalluk/rpusbdisp/actions/workflows/build.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/headwalluk/rpusbdisp.svg)](https://github.com/headwalluk/rpusbdisp/commits/master)
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
@@ -40,7 +40,7 @@ Full instructions are in [docs/getting-started.md](docs/getting-started.md).
 ## Documentation
 
 - [Getting Started](docs/getting-started.md) — install, verify, and first output
-- [Module Parameters](docs/module-parameters.md) — `fps`, `console` (headless mode)
+- [Module Parameters](docs/module-parameters.md) — `fps`, and running headless
 - [Building on Debian/AMD64](docs/building-debian-amd64.md)
 - [Building on Raspberry Pi](docs/building-raspberry-pi.md)
 - [Cross-compiling for Raspberry Pi](docs/cross-compiling-for-rpi.md)

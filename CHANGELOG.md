@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.1] - 2026-06-06
+
+### Removed
+- `console` module parameter (introduced in 1.0.0). It tried to keep `fbcon`
+  off the display by refusing in-kernel framebuffer opens (`user == 0`), the
+  same trick `udlfb` uses. That works for `udlfb` because it is never the boot
+  primary console, but this driver registers its framebuffer at module-init and
+  on a headless machine (e.g. a Raspberry Pi with no HDMI) the display is the
+  *only* framebuffer — so `fbcon` makes it the primary console. Refusing the
+  open then makes `register_framebuffer()` fail with `-ENODEV` while the device
+  is already partially registered, and the driver's cleanup path oopses in
+  `framebuffer_release()` (with a follow-on use-after-free on the next write).
+
+### Fixed
+- Boot-time kernel oops / use-after-free on headless systems, by removing the
+  broken `console` parameter.
+
+### Changed
+- `docs/module-parameters.md` now documents the supported, crash-free way to run
+  without a framebuffer console (unbind `fbcon` via `/sys/class/vtconsole`, or
+  `fbcon=map:` on the kernel command line) instead of a driver option.
+
 ## [1.0.0] - 2026-06-06
 
 First stable release. The driver builds cleanly and runs on modern kernels
